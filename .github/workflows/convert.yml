@@ -1,0 +1,27 @@
+name: 一键转换 deb 为 rootless 无根版
+on:
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 安装依赖
+        run: sudo apt install -y dpkg-dev
+
+      - name: 下载 rootless-patcher 工具
+        run: |
+          wget -O rootless-patcher https://github.com/NightwindDev/rootless-patcher/releases/download/0.0.1/rootless-patcher-linux-x86_64
+          chmod +x rootless-patcher
+
+      - name: 下载你要转换的 14697.deb
+        run: wget -O input.deb "https://github.com/hell-ao/Rootless-deb-tool/releases/download/vv1.0/14697.deb"
+
+      - name: 开始自动转换
+        run: ./rootless-patcher input.deb output.deb
+
+      - name: 上传转换好的无根 deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: rootless-deb
+          path: output.deb
